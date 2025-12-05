@@ -2,13 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 自定义全局样式：暗色渐变背景 + 卡片视觉 */
+/* 全局样式：亮色 + 黄黑配色 */
 html, body, #root {
   height: 100%;
 }
 
 body {
-  @apply bg-gradient-to-b from-[#071026] via-[#071828] to-[#081224] text-slate-100 antialiased;
+  @apply bg-white text-gray-900 antialiased;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
@@ -16,16 +16,50 @@ body {
   @apply min-h-screen;
 }
 
+/* 亮色系卡片背景 */
 .card-bg {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: #f8f8f8;
+  border: 2px solid #e0e0e0;
+}
+
+/* 黄色高亮卡片 */
+.card-yellow {
+  background: #CCFF00;
+  border: 2px solid #b3e600;
+}
+
+/* 斜纹背景装饰 */
+.stripe-pattern {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 15px,
+    rgba(0, 0, 0, 0.05) 15px,
+    rgba(0, 0, 0, 0.05) 30px
+  );
+}
+
+/* 黄色斜纹 */
+.stripe-yellow {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 15px,
+    #CCFF00 15px,
+    #CCFF00 30px
+  );
+}
+
+/* 卡片悬停效果 */
+.glass-hover {
+  transition: transform 200ms ease, box-shadow 200ms ease;
 }
 
 .glass-hover:hover {
-  transform: translateY(-6px) scale(1.01);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(204, 255, 0, 0.2);
 }
 
-/* smooth transitions for cards */
 .card-transition {
   transition: transform 200ms ease, box-shadow 200ms ease;
 }
