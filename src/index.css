@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 自定义全局样式：暗色渐变背景 + 卡片视觉 */
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  @apply bg-gradient-to-b from-[#071026] via-[#071828] to-[#081224] text-slate-100 antialiased;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.app-container {
+  @apply min-h-screen;
+}
+
+.card-bg {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.glass-hover:hover {
+  transform: translateY(-6px) scale(1.01);
+}
+
+/* smooth transitions for cards */
+.card-transition {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
