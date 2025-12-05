@@ -15,6 +15,7 @@ const ChatBot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showChat, setShowChat] = useState(false)
 
   const canSend = useMemo(() => message.trim().length > 0 && !loading, [message, loading])
 
@@ -60,81 +61,98 @@ const ChatBot: React.FC = () => {
   }
 
   return (
-    <section id="chatbot" className="mt-10">
-      <div className="card-bg rounded-xl p-5 md:p-6 shadow-sm">
+    <section id="chatbot" className="mt-12 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* 折叠/展开按钮 */}
+      <button
+        onClick={() => setShowChat(!showChat)}
+        className="w-full flex items-center justify-between bg-dark-charcoal border-2 border-neon-yellow rounded-lg p-4 hover:bg-gray-900 transition"
+      >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-md bg-gradient-to-br from-indigo-600 to-purple-500 flex items-center justify-center text-sm font-semibold">AI</div>
-          <div>
-            <h2 className="text-xl font-semibold leading-tight">Chatbot · 留言助手</h2>
-            <p className="text-sm text-slate-300">发送你的问题或需求，等待 n8n 自动回复。</p>
+          <div className="w-10 h-10 rounded-md bg-neon-yellow flex items-center justify-center text-sm font-black text-dark-charcoal">💬</div>
+          <div className="text-left">
+            <h2 className="text-lg font-black text-neon-yellow leading-tight">留言助手 · ChatBot</h2>
+            <p className="text-xs text-gray-400">发送你的问题或训练需求，等待 n8n 自动回复</p>
           </div>
         </div>
+        <div className="text-neon-yellow font-bold text-xl">{showChat ? '−' : '+'}</div>
+      </button>
 
-        <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 rounded-lg bg-white/2 p-4 space-y-3 max-h-72 overflow-y-auto">
-            {messages.length === 0 && (
-              <div className="text-sm text-slate-400">还没有消息，留下第一条吧。</div>
-            )}
-            {messages.map((m) => (
-              <div key={m.id} className="flex gap-2">
-                <div className={`w-8 h-8 rounded-md flex items-center justify-center text-xs font-semibold ${m.role === 'user' ? 'bg-indigo-500/70' : 'bg-emerald-500/70'}`}>
-                  {m.role === 'user' ? 'Me' : 'Bot'}
+      {/* 聊天区域（可折叠） */}
+      {showChat && (
+        <div className="mt-4 bg-gray-900 rounded-lg p-6 border-2 border-slate-700">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* 消息展示区 */}
+            <div className="lg:col-span-2 rounded-lg bg-slate-800 p-4 space-y-3 max-h-96 overflow-y-auto border border-slate-700">
+              {messages.length === 0 && (
+                <div className="text-sm text-gray-400 italic">还没有消息，留下第一条吧。</div>
+              )}
+              {messages.map((m) => (
+                <div key={m.id} className="flex gap-3">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 ${
+                    m.role === 'user'
+                      ? 'bg-neon-yellow text-dark-charcoal'
+                      : 'bg-gray-600 text-white'
+                  }`}>
+                    {m.role === 'user' ? '你' : 'n8n'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className={`rounded-md p-3 ${
+                      m.role === 'user'
+                        ? 'bg-neon-yellow/10 border border-neon-yellow/30 text-gray-100'
+                        : 'bg-slate-700 border border-slate-600 text-gray-200'
+                    }`}>
+                      <p className="text-sm whitespace-pre-wrap break-words">{m.text}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <div className="text-xs text-slate-400">{m.role === 'user' ? '你' : 'n8n 回复'}</div>
-                  <div className="text-sm text-slate-100 whitespace-pre-wrap">{m.text}</div>
-                </div>
-              </div>
-            ))}
-            {error && <div className="text-sm text-rose-300">{error}</div>}
-            {loading && <div className="text-sm text-indigo-200 animate-pulse">等待 n8n 回复中...</div>}
-          </div>
+              ))}
+              {error && <div className="text-sm text-red-400 font-semibold">❌ {error}</div>}
+              {loading && <div className="text-sm text-neon-yellow animate-pulse font-semibold">⏳ 等待 n8n 回复中...</div>}
+            </div>
 
-          <form onSubmit={handleSubmit} className="rounded-lg p-4 bg-white/2 space-y-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* 输入表单 */}
+            <form onSubmit={handleSubmit} className="rounded-lg p-4 bg-slate-800 space-y-3 border border-slate-700">
               <div>
-                <label className="block text-xs text-slate-400 mb-1">姓名（可选）</label>
+                <label className="block text-xs text-gray-300 mb-2 font-bold">姓名（可选）</label>
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="How should I call you?"
+                  className="w-full rounded-md bg-slate-700 border border-slate-600 text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neon-yellow/50"
+                  placeholder="你叫什么？"
                 />
               </div>
               <div>
-                <label className="block text-xs text-slate-400 mb-1">邮箱（可选）</label>
+                <label className="block text-xs text-gray-300 mb-2 font-bold">邮箱（可选）</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="for follow-up"
+                  className="w-full rounded-md bg-slate-700 border border-slate-600 text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neon-yellow/50"
+                  placeholder="contact@example.com"
                 />
               </div>
-            </div>
-
-            <div>
-              <label className="block text-xs text-slate-400 mb-1">留言</label>
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                rows={3}
-                required
-                className="w-full rounded-md bg-black/40 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                placeholder="Tell me your goal、问题或训练需求"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={!canSend}
-              className="w-full rounded-md py-2 text-sm font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {loading ? '发送中...' : '发送给 n8n'}
-            </button>
-          </form>
+              <div>
+                <label className="block text-xs text-gray-300 mb-2 font-bold">留言 *</label>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  rows={3}
+                  required
+                  className="w-full rounded-md bg-slate-700 border border-slate-600 text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neon-yellow/50 resize-none"
+                  placeholder="你的问题或训练需求..."
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={!canSend}
+                className="w-full rounded-md py-2 text-sm font-bold bg-neon-yellow text-dark-charcoal hover:bg-yellow-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {loading ? '⏳ 发送中...' : '✉️ 发送给 n8n'}
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </section>
   )
 }

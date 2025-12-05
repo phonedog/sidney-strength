@@ -3,6 +3,7 @@ import Layout from './components/Layout'
 import Hero from './components/Hero'
 import Card from './components/Card'
 import StatsSection from './components/StatsSection'
+import ChatBot from './components/ChatBot'
 import { cards } from './data'
 
 const App: React.FC = () => {
@@ -21,6 +22,8 @@ const App: React.FC = () => {
       </section>
 
       <StatsSection />
+
+      <ChatBot />
     </Layout>
   )
 }
